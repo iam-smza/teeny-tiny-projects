@@ -19,7 +19,7 @@
 #
 # Plans for Next Iteration:
 # 1. Create a custom server to use the POST method to make changes in the db
-# 2. Make it so it uses Protocol Oriented Capabilities as provided by Python
+# 2. Make it so that it uses Protocol Oriented Capabilities provided by Python
 #
 
 import json
