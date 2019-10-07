@@ -1,5 +1,27 @@
 # coding=utf-8
 
+# Original date: 4-Oct-2019
+# Last Updated: 7-Oct-2019 * File will be updated Weekly
+# Maintainer: Zamran Ali
+# Github: https://www.github.com/iam-smza/
+#
+# OBJECTIVE ->
+# Use a Dummy API with rich user data and download data (GET AND POST methods)
+# to a database
+#
+# API: JSONPLACEHOLDER, DATABASE TECHNOLOGY: SQLITE v.3
+#
+# What's Working:
+# 1.GET method works and the user data is loaded and feeded off into the db
+
+# What's not Working:
+# 1. POST method which needs a server that can send and receive data
+#
+# Plans for Next Iteration:
+# 1. Create a custom server to use the POST method to make changes in the db
+# 2. Make it so it uses Protocol Oriented Capabilities as provided by Python
+#
+
 import json
 import sqlite3
 
