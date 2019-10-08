@@ -1,7 +1,7 @@
 # coding=utf-8
 
 # Original date: 4-Oct-2019
-# Last Updated: 7-Oct-2019 * File will be updated Weekly
+# Last Updated: 8-Oct-2019 * File will be updated Weekly
 # Maintainer: Zamran Ali
 # Github: https://www.github.com/iam-smza/
 #
@@ -27,44 +27,59 @@ import sqlite3
 
 import requests
 
-# initialize connection with the database
-db = sqlite3.connect('user.sqlite')
-handle = db.cursor()
 
-# make a table in the database
-handle.execute('DROP TABLE IF EXISTS Users')
-handle.execute(
-    'CREATE TABLE Users (no INTEGER, id INTEGER, title TEXT,body TEXT)')
+def set_up_database(db_name, val_var):
+    db = sqlite3.connect(f'{db_name}.sqlite')
+    handle = db.cursor()
 
-# connect to the JSONPLACEHOLDER API and get a response object
-response = requests.get('https://jsonplaceholder.typicode.com/posts')
+    handle.execute(f'DROP TABLE IF EXISTS {db_name.title()}')
+    handle.execute(f'CREATE TABLE {db_name.title()} {val_var}')
+    return db, handle
 
-# parse the response object from the JSONPLACEHOLDER API using methods
-posts = json.loads(response.text)
 
-# we get a list of dictionaries of user_data from the API
-# we need to extract the data from the lists and dictionaries
+def add_data_in_database(db, handle, db_name, data_tuple):
+    handle.execute(f'INSERT INTO {db_name.title()} VALUES (?, ?, ?, ?)',
+                   data_tuple)
+    db.commit()
 
+
+def show_data_in_database(handle, db_name):
+    handle.execute(f'SELECT no, uid, title, body FROM {db_name.title()}')
+    print('---DATABASE START---')
+    for row in handle:
+        print(row)
+    print('---DATABASE END---')
+
+
+def get_js_response(uri):
+    response = requests.get(uri)
+    data_obj = json.loads(response.text)
+    return data_obj
+
+
+# setting up the databse name and type of values
+my_db_name = 'users'
+type_of_values = '(no INTEGER, uid INTEGER, title TEXT, body TEXT)'
+
+# passing the name and values to make databse
+db_conn, db_handle = set_up_database(my_db_name, type_of_values)
+
+# getting the data from the jsonplaceholder and saving it into a container
+URI = 'https://jsonplaceholder.typicode.com/posts'
+posts = get_js_response(URI)
+
+# looping through the data in the container to get values
 for user in posts:
     uid = user['userId']
     no = user['id']
     title = user['title']
     body = user['body']
-    handle.execute(
-        'INSERT INTO Users (no, id, title, body) VALUES (?, ?, ?, ?)',
-        (uid, no, title, body))
-    db.commit()
+    # making a tuple so that the data values can be passed to database
+    user_tuple = (uid, no, title, body)
+    add_data_in_database(db_conn, db_handle, my_db_name, user_tuple)
 
-print('...')
-print('User data copied to the database.')
-print('...')
-
-# showing the contents of the database by selecting the required fields
-handle.execute('SELECT no, id, title, body FROM Users')
-print('---DATABASE START---')
-for row in handle:
-    print(row)
-print('---DATABASE END---')
+# confirming the user data is indeed added into the database
+show_data_in_database(db_handle, my_db_name)
 
 # closing the database
-db.close()
+db_conn.close()
