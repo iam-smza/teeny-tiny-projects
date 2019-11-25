@@ -81,7 +81,6 @@ if __name__ == "__main__":
     # remove file if exists for now
     if path.exists('database.txt'):
         remove('database.txt')
-        print('I am here')
 
     # saving user data on to a file
     with open('database.txt', 'w') as file_handle:
